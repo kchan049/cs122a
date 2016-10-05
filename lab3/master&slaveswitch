@@ -1,19 +1,19 @@
-#include <stdint.h> 
-#include <stdlib.h> 
-#include <stdio.h> 
-#include <stdbool.h> 
-#include <string.h> 
-#include <math.h> 
-#include <avr/io.h> 
-#include <avr/interrupt.h> 
-#include <avr/eeprom.h> 
-#include <avr/portpins.h> 
-#include <avr/pgmspace.h> 
- 
-//FreeRTOS include files 
-#include "FreeRTOS.h" 
-#include "task.h" 
-#include "croutine.h" 
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <math.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/eeprom.h>
+#include <avr/portpins.h>
+#include <avr/pgmspace.h>
+
+//FreeRTOS include files
+#include "FreeRTOS.h"
+#include "task.h"
+#include "croutine.h"
 #include "usart_ATmega1284.h"
 enum LEDState {initled, offled, onled} led_state;
 enum SENDState {initsend, sendsend} send_state;
@@ -38,10 +38,13 @@ void REC_Init(){
 
 char ledstatus = 0;
 void LEDS_Tick(){
+	char timer = 10; //number of cycles
+	static char counttimmer = 0; //number of loops you want
 	char master = 0x01 & ~getbit(PINB, 0);
+	
 	if (master)
-		PORTC = 0xFF;
-	else 
+		PORTC = 0xFF; 
+	else
 		PORTC = 0x00;
 	//Transitions
 	switch(led_state){
@@ -49,19 +52,29 @@ void LEDS_Tick(){
 			led_state = offled;
 			break;
 		case offled:
-			if (master)
-				led_state = onled;
+			if (master) {
+				counttimmer++;
+				if (counttimmer == timer) {
+					led_state = onled;
+					counttimmer = 0;
+				}
+			}
 			else
 				if (ledstatus)
 					led_state = onled;
 			break;
 		case onled:
-			if (master)
-				led_state = offled;
+			if (master) {
+				counttimmer++;
+				if (counttimmer == timer) {
+					led_state = offled;
+					counttimmer = 0;
+				}
+			}
 			else
 				if (!ledstatus)
 					led_state = offled;
-			break;
+				break;
 		default:
 			break;
 	}
@@ -106,7 +119,7 @@ void SEND_Tick() {
 		case sendsend:
 			if (0x01 & ~getbit(PINB, 0)) //if master
 				if (USART_IsSendReady(1))
-					USART_Send(ledstatus, 1);	
+					USART_Send(ledstatus, 1);
 			break;
 	}
 }
@@ -115,34 +128,34 @@ void REC_Tick() {
 	//transition
 	switch(rec_state){
 		case initrec:
-			rec_state = recrec;
-			break;
+		rec_state = recrec;
+		break;
 		case recrec:
-			rec_state = recrec;
-			break;
+		rec_state = recrec;
+		break;
 		default:
-			break;
+		break;
 	}
 	//action
 	switch(rec_state){
 		case initrec:
-			break;
+		break;
 		case recrec:
-			if (!(0x01 & ~getbit(PINB, 0))) //if slave
-				if (USART_HasReceived(0))
-					ledstatus = USART_Receive(0);
-			break;
+		if (!(0x01 & ~getbit(PINB, 0))) //if slave
+		if (USART_HasReceived(0))
+		ledstatus = USART_Receive(0);
+		break;
 	}
 }
 
 void LedSecTask()
 {
 	LEDS_Init();
-   for(;;) 
-   { 	
-	LEDS_Tick();
-	vTaskDelay(1000); 
-   } 
+	for(;;)
+	{
+		LEDS_Tick();
+		vTaskDelay(100);
+	}
 }
 
 void SendSecTask()
@@ -168,36 +181,36 @@ void RecSecTask()
 void StartSecPulse(unsigned portBASE_TYPE Priority)
 {
 	xTaskCreate(LedSecTask, (signed portCHAR *)"LedSecTask", configMINIMAL_STACK_SIZE, NULL, Priority, NULL );
-}	
+}
 
 void StartSendPulse(unsigned portBASE_TYPE Priority)
 {
 	xTaskCreate(SendSecTask, (signed portCHAR *)"SendSendTask", configMINIMAL_STACK_SIZE, NULL, Priority, NULL );
 }
- 
+
 void StartRecPulse(unsigned portBASE_TYPE Priority)
 {
 	xTaskCreate(RecSecTask, (signed portCHAR *)"LedRecTask", configMINIMAL_STACK_SIZE, NULL, Priority, NULL );
 }
 
-int main(void) 
-{ 
-   //usart 
-   initUSART(0); //rec
-   initUSART(1); //send
-   
-   DDRA = 0xFF; PORTA= 0x00; //output
-   DDRB = 0x00; PORTB = 0xFF; //input
-   DDRC = 0xFF; PORTC = 0x00; //output
-   
-   
-   
-   //Start Tasks  
-   StartSecPulse(1);
-   StartSendPulse(1);
-   StartRecPulse(1);
-    //RunSchedular 
-   vTaskStartScheduler(); 
- 
-   return 0; 
+int main(void)
+{
+	//usart
+	initUSART(0); //rec
+	initUSART(1); //send
+	
+	DDRA = 0xFF; PORTA= 0x00; //output
+	DDRB = 0x00; PORTB = 0xFF; //input
+	DDRC = 0xFF; PORTC = 0x00; //output
+	
+	
+	
+	//Start Tasks
+	StartSecPulse(1);
+	StartSendPulse(1);
+	StartRecPulse(1);
+	//RunSchedular
+	vTaskStartScheduler();
+	
+	return 0;
 }
