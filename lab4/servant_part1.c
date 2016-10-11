@@ -37,6 +37,7 @@ void SPI_ServantInit(void) {
 	SREG = 0x80;
 }
 
+unsigned char recieivedData = 0;
 ISR(SPI_STC_vect) { // this is enabled in with the SPCR register’s “SPI
   // Interrupt Enable”
     // SPDR contains the received data, e.g. unsigned char receivedData =
@@ -58,7 +59,7 @@ void Servant_Tick() {
 			servant_state = servantrecieve;
 			break;
 		case servantrecieve:
-			
+			recieivedData;
 			break;
 	}
 }
