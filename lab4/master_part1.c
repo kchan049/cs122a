@@ -60,8 +60,10 @@ void Master_Tick() {
 	//Transitions
 	switch (master_state){
 		case masterwait:
+			master_state = mastersend;
 			break;
 		case mastersend:
+			SPI_MasterTransmit('c');
 			break;
 	}
 }
