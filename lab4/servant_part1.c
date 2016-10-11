@@ -55,8 +55,10 @@ void Servant_Tick() {
 	//Transitions
 	switch (servant_state){
 		case servantwait:
+			servant_state = servantrecieve;
 			break;
 		case servantrecieve:
+			
 			break;
 	}
 }
