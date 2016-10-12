@@ -41,7 +41,7 @@ unsigned char recieivedData = 0x00;
 ISR(SPI_STC_vect) { // this is enabled in with the SPCR register’s “SPI
   // Interrupt Enable”
     // SPDR contains the received data, e.g. unsigned char receivedData =
-	//recieivedData = SPDR;
+	recieivedData = SPDR;
 // SPDR;
 }
 unsigned char temp;
