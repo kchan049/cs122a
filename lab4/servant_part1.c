@@ -34,7 +34,7 @@ void SPI_ServantInit(void) {
 	// set SPCR register to enable SPI and enable SPI interrupt (pg. 168)
     SPCR |= (1<<SPE) | (1<<SPIE);
 	// make sure global interrupts are enabled on SREG register (pg. 9)
-	SREG = 0x80;
+    SREG = 0x80;
 }
 
 unsigned char recieivedData = 0;
