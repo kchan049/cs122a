@@ -135,7 +135,7 @@ void Master_Tick() {
            LCD_WriteData(speed + '0');
 			
 			//send to servant*/
-			//SPI_MasterTransmit(data);
+			SPI_MasterTransmit(data);
 			break;
 		}
 }
