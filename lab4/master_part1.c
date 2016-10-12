@@ -40,6 +40,7 @@ void SPI_MasterInit(void) {
 
 void SPI_MasterTransmit(unsigned char cData) {
 	// data in SPDR will be transmitted, e.g. SPDR = cData;
+	SPDR = cData;
 	// set SS low
 	PORTB=SetBit(PORTB,4,0);
 	while(!(SPSR & (1<<SPIF))) { // wait for transmission to complete
