@@ -9,8 +9,6 @@ unsigned char SetBit(unsigned char x, unsigned char k, unsigned char b)
 	return (b ? x | (0x01 << k) : x & ~(0x01 << k));
 }
 
-unsigned char shift_data = 0;
-
 // Ensure DDRC is setup as output
 void transmit_data(unsigned char data) {
 	unsigned char i;
