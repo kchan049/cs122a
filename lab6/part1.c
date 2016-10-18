@@ -115,3 +115,36 @@ int TickFct_State_machine_2(int state) {
 	SM2_State = state;
 	return state;
 }
+
+int main(void)
+{
+	// initialize ports
+	DDRA = 0x00; PORTA = 0xFF;
+	DDRB = 0x00; PORTB = 0xFF;
+	DDRC = 0xFF; PORTC = 0x00;
+	DDRD = 0xFF; PORTD = 0x00;
+	
+	tasksNum = 2; // declare number of tasks
+	task tsks[2]; // initialize the task array
+	tasks = tsks; // set the task array
+	
+	// define tasks
+	unsigned char i=0; // task counter
+	tasks[i].state = -1;
+	tasks[i].period = 2;
+	tasks[i].elapsedTime = tasks[i].period;
+	tasks[i].TickFct = &TickFct_State_machine_2;
+	++i;
+	tasks[i].state = -1;
+	tasks[i].period = 50;
+	tasks[i].elapsedTime = tasks[i].period;
+	tasks[i].TickFct = &TickFct_State_machine_1;
+	++i;
+	
+	TimerSet(2); // value set should be GCD of all tasks
+	TimerOn();
+    while(1)
+    {
+        //TODO:: Please write your application code 
+    }
+}
