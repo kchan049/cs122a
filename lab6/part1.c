@@ -80,7 +80,7 @@ void Tick_Tick() {
 		}
 		break;
 		default:
-		tick_state = -1;
+		break;
 	}
 
 	switch(tick_state) {
