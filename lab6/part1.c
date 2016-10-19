@@ -103,7 +103,7 @@ void Tock_Tick() {
 		}
 		break;
 		default:
-		tock_state = -1;
+		break;
 	} // Transitions
 
 	switch(tock_state) { // State actions
