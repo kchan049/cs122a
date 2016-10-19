@@ -51,19 +51,19 @@ void Tick_Tick() {
 		if (~PINA & 0x01 || ~PINA || ~PINB & 0x01 || ~PINB & 0x02) {
 			tick_state = tick_s2;
 			if (~PINA & 0x01) {
-				if (off_row < 0)
+				if (off_row < 1)
 				++off_row;
 			}
 			else if (~PINA & 0x02) {
-				if (off_row > -4)
+				if (off_row > -1)
 				--off_row;
 			}
 			else if (~PINB & 0x01) {
-				if (off_col < 7)
+				if (off_col < 2)
 				++off_col;
 			}
 			else if (~PINB & 0x02) {
-				if (off_col > 0)
+				if (off_col > -2)
 				--off_col;
 			}
 		}
