@@ -39,10 +39,7 @@ void SM1_Tick() {
 
 	switch(sm1_state) { // State actions
 		case on:
-			if (~PINB & 0x03 == 3) {
-			
-			}
-			else if (~PINB & 0x01) {
+			if (~PINB & 0x01) {
 				if (counter < 7)
 				++counter;
 				else
