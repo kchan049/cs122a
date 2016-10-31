@@ -70,7 +70,7 @@ void SM1Task() {
 	for(;;)
 	{
 		SM1_Tick();
-		vTaskDelay(100);
+		vTaskDelay(3);
 	}
 }
 
@@ -83,7 +83,6 @@ int main(void) {
 	// initialize ports
 	DDRA = 0xFF; PORTA = 0x00;
 	DDRB = 0x00; PORTB = 0xFF;
-	DDRD = 0xFF; PORTD = 0x00;
 	//Start Tasks
 	StartSecPulse1(1);
 	//RunSchedular
